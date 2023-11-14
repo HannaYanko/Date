@@ -1,18 +1,23 @@
 <?php
-class Date {
-private $year;
-private $month;
-private $day;
 
-public function __construct($year, $month, $day) {
-if ($this->isValidDate($year, $month, $day)) {
-$this->year = $year;
-$this->month = $month;
-$this->day = $day;
-} else {
-throw new InvalidArgumentException("Недійсна дата");
-}
-}
+class Date
+{
+    private $year;
+    private $month;
+    private $day;
+
+    public function __construct($year, $month, $day)
+    {
+        if ($this->isValidDate($year, $month, $day)) {
+            $this->year = $year;
+            $this->month = $month;
+            $this->day = $day;
+        } else {
+            throw new InvalidArgumentException("Недійсна дата");
+        }
+    }
+
+
 
     public function getYear()
     {
@@ -29,50 +34,37 @@ throw new InvalidArgumentException("Недійсна дата");
         return $this->day;
     }
 
-    public function compare(Date $c)
+    public function compare(Date $other)
     {
-        if ($this->year !== $c->getYear()) {
-            return $this->year - $c->getYear();
+        if ($this->year !== $other->getYear()) {
+            return $this->year - $other->getYear();
         }
-        if ($this->month !== $c->getMonth()) {
-            return $this->month - $c->getMonth();
+        if ($this->month !== $other->getMonth()) {
+            return $this->month - $other->getMonth();
         }
 
-        return $this->day - $c->getDay();
+        return $this->day - $other->getDay();
     }
 
-    public function diff(Date $c)
+    public function diff(Date $item)
     {
         $diff1 = strtotime($this->year . '-' . $this->month . '-' . $this->day);
-        $diff2 = strtotime($c->getYear() . '-' . $c->getMonth() . '-' . $c->getDay());
+        $diff2 = strtotime($item->getYear() . '-' . $item->getMonth() . '-' . $item->getDay());
 
         $diff = abs($diff1 - $diff2);
 
         return floor($diff / (60 * 60 * 24));
     }
+
+    public function format($format)
+    {
+        return sprintf($format, $this->year, $this->month, $this->day);
+    }
+
     private function isValidDate($year, $month, $day)
     {
         return checkdate($month, $day, $year);
     }
-    public function format($format) {
-        $date = new DateTime("{$this->year}-{$this->month}-{$this->day}");
-        return $date->format($format);
-    }
-
 }
 
 
-$date1 = new Date(2017, 10, 10);
-$date2 = new Date(2023, 11, 6);
-
-if ($date1->getYear() and $date2->getYear()) {
-    echo "Рік: " . $date1->getYear() . PHP_EOL;
-    echo "Місяць: " . $date1->getMonth() . PHP_EOL;
-    echo "День: " . $date1->getDay() . PHP_EOL;
-
-
-    echo 'Різниця між днями: ' . $date1->diff($date2) . PHP_EOL;
-    echo 'Результат порівняння: ' . $date1->compare($date2) . PHP_EOL;
-} else {
-    echo 'Недійсна дата';
-}
